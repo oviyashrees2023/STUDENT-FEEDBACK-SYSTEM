@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard | Secure Feedback System</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  min-height:100vh;
+  background: linear-gradient(120deg, #1d2671, #c33764);
+  font-family:'Segoe UI', sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:40px 20px;
+}
+
+.admin-box{
+  background:#ffffff;
+  width:100%;
+  max-width:1200px;
+  padding:35px;
+  border-radius:18px;
+  box-shadow:0 25px 50px rgba(0,0,0,0.3);
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+
+.header h3{
+  font-weight:700;
+  color:#1d2671;
+}
+
+.btn-chatbot{
+  background: linear-gradient(120deg, #1d2671, #c33764);
+  color:white;
+  border:none;
+  padding:10px 22px;
+  border-radius:30px;
+  font-weight:600;
+}
+
+.stat-card{
+  background:#f8f9fa;
+  border-radius:16px;
+  padding:22px;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.chart-card{
+  background:#f8f9fa;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+.privacy{
+  font-size:14px;
+  color:#6c757d;
+  text-align:center;
+  margin-top:25px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="admin-box">
+
+  <div class="header">
+    <div>
+      <h3>University Feedback Dashboard</h3>
+      <p>Aggregated AI-powered analytics</p>
+    </div>
+    <button class="btn-chatbot" onclick="openChatbot()">
+      🤖 Open Insights Assistant
+    </button>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-4 mb-3">
+      <div class="stat-card">
+        <h6>Total Feedback</h6>
+        <h3 id="total">0</h3>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="stat-card">
+        <h6>Average Rating</h6>
+        <h3 id="avgRating">0.0</h3>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="stat-card">
+        <h6>Overall Sentiment</h6>
+        <h3 id="overallSentiment">Neutral</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-4">
+      <div class="chart-card">
+        <h6 class="text-center mb-3">Average Rating Overview</h6>
+        <canvas id="ratingChart"></canvas>
+      </div>
+    </div>
+    <div class="col-md-6 mb-4">
+      <div class="chart-card">
+        <h6 class="text-center mb-3">Sentiment Distribution</h6>
+        <canvas id="sentimentChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="privacy">
+    🔒 Only aggregated data is shown. Individual feedback is never exposed.
+  </div>
+
+</div>
+
+<script>
+function openChatbot(){
+  window.location.href = "chatbot.html";
+}
+
+fetch("http://127.0.0.1:5000/analytics")
+.then(res => res.json())
+.then(result => {
+
+  const data = result.raw_feedback;
+  const summary = result.summary;
+
+  document.getElementById("total").innerText = summary.feedback_count || 0;
+
+  let avgRating = 0;
+  if(data.length > 0){
+    avgRating = data.reduce((a,b)=>a+Number(b.rating),0) / data.length;
+  }
+  document.getElementById("avgRating").innerText = avgRating.toFixed(1);
+
+  let sentimentText = "Neutral";
+  if(summary.average_sentiment > 0.2) sentimentText = "Positive";
+  if(summary.average_sentiment < -0.2) sentimentText = "Negative";
+  document.getElementById("overallSentiment").innerText = sentimentText;
+
+  new Chart(document.getElementById("ratingChart"),{
+    type:"bar",
+    data:{
+      labels:["All Courses"],
+      datasets:[{
+        label:"Average Rating",
+        data:[avgRating],
+        backgroundColor:"#1d2671"
+      }]
+    }
+  });
+
+  let pos=0, neu=0, neg=0;
+  data.forEach(d=>{
+    if(d.sentiment_score > 0.2) pos++;
+    else if(d.sentiment_score < -0.2) neg++;
+    else neu++;
+  });
+
+  new Chart(document.getElementById("sentimentChart"),{
+    type:"pie",
+    data:{
+      labels:["Positive","Neutral","Negative"],
+      datasets:[{
+        data:[pos, neu, neg],
+        backgroundColor:["#198754","#ffc107","#dc3545"]
+      }]
+    }
+  });
+
+})
+.catch(err => console.error("Analytics error:", err));
+</script>
+
+</body>
+</html>

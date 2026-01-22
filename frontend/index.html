@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Secure Feedback System</title>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+/* ================= GLOBAL PAGE ================= */
+body{
+  min-height:100vh;
+  background: linear-gradient(120deg, #1d2671, #c33764);
+  font-family:'Segoe UI', sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:40px 20px;
+}
+
+/* ================= MAIN CONTAINER ================= */
+.main-card{
+  background:#ffffff;
+  width:100%;
+  max-width:1200px;
+  border-radius:22px;
+  padding:50px;
+  box-shadow:0 30px 60px rgba(0,0,0,0.35);
+  animation:fadeUp 0.9s ease forwards;
+  opacity:0;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(25px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* ================= HERO SECTION ================= */
+.hero{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:40px;
+}
+
+.hero-text{
+  max-width:520px;
+}
+
+.hero-text h1{
+  font-size:52px;
+  font-weight:800;
+  color:#1d2671;
+}
+
+.hero-text p{
+  margin-top:18px;
+  color:#6c757d;
+  line-height:1.7;
+  font-size:16px;
+}
+
+/* ================= CTA BUTTON ================= */
+.btn-main{
+  background: linear-gradient(120deg, #1d2671, #c33764);
+  color:white;
+  border:none;
+  padding:12px 30px;
+  border-radius:30px;
+  font-weight:600;
+  margin-top:25px;
+  transition:0.2s ease;
+}
+
+.btn-main:hover{
+  opacity:0.9;
+  transform:translateY(-1px);
+}
+
+/* ================= ROLE SELECTION ================= */
+.roles{
+  display:flex;
+  gap:30px;
+  margin-top:40px;
+}
+
+.role-card{
+  width:220px;
+  height:170px;
+  background:#f8f9fa;
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+  transition:0.3s ease;
+}
+
+.role-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 20px 45px rgba(0,0,0,0.18);
+}
+
+.role-card i{
+  font-size:44px;
+  margin-bottom:12px;
+}
+
+.role-card span{
+  font-size:18px;
+  font-weight:600;
+}
+
+.student{ color:#2563eb; }
+.admin{ color:#f59e0b; }
+
+/* ================= HERO IMAGE ================= */
+.hero-img img{
+  max-width:420px;
+  animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
+
+/* ================= LEARN MORE SECTION ================= */
+.learn-more{
+  margin-top:45px;
+  background:#f8f9fa;
+  padding:28px;
+  border-radius:18px;
+  border:1px solid #e5e7eb;
+  display:none;
+  animation:fadeUpSmall 0.4s ease;
+}
+
+@keyframes fadeUpSmall{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.learn-more h4{
+  color:#1d2671;
+  font-weight:700;
+  margin-bottom:12px;
+  margin-top:15px;
+}
+
+.learn-more p{
+  color:#6c757d;
+  line-height:1.7;
+  font-size:15px;
+  margin-bottom:10px;
+}
+
+/* ================= FEATURE GRID ================= */
+.features{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-top:20px;
+}
+
+.feature-card{
+  background:#ffffff;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+  border:1px solid #e5e7eb;
+  transition:0.2s ease;
+}
+
+.feature-card:hover{
+  transform:translateY(-4px);
+}
+
+.feature-card i{
+  font-size:28px;
+  color:#1d2671;
+  margin-bottom:10px;
+}
+
+.feature-card h6{
+  font-weight:700;
+  margin-bottom:6px;
+}
+
+.feature-card p{
+  font-size:14px;
+  color:#6c757d;
+}
+
+/* ================= FOOTER ================= */
+.footer{
+  margin-top:40px;
+  padding-top:15px;
+  border-top:1px solid #eee;
+  font-size:13px;
+  color:#6c757d;
+  display:flex;
+  justify-content:space-between;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:992px){
+  .hero{
+    flex-direction:column;
+    text-align:center;
+  }
+  .roles{
+    justify-content:center;
+  }
+  .features{
+    grid-template-columns:1fr;
+  }
+  .footer{
+    flex-direction:column;
+    gap:6px;
+    text-align:center;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="main-card">
+
+  <!-- HERO SECTION -->
+  <div class="hero">
+
+    <div class="hero-text">
+      <h1>University Feedback System</h1>
+      <p>
+        A secure, privacy-preserving platform for collecting and analyzing
+        student feedback using AI-driven aggregated insights.
+      </p>
+
+      <button class="btn btn-main" onclick="toggleLearnMore()">Learn more</button>
+
+      <div class="roles">
+        <div class="role-card" onclick="go('student')">
+          <i class="bi bi-mortarboard-fill student"></i>
+          <span>Student</span>
+        </div>
+        <div class="role-card" onclick="go('admin')">
+          <i class="bi bi-people-fill admin"></i>
+          <span>Employee</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-img">
+      <img src="feedback-illustration.png" alt="Feedback Illustration">
+    </div>
+
+  </div>
+
+  <!-- LEARN MORE SECTION -->
+  <div id="learnMore" class="learn-more">
+
+    <h4>Why this system?</h4>
+    <p>
+      Traditional feedback systems often fail to guarantee anonymity, which discourages honest responses.
+      Our platform is designed with privacy and security as core principles.
+    </p>
+
+    <div class="features">
+
+      <div class="feature-card">
+        <i class="bi bi-shield-lock-fill"></i>
+        <h6>Anonymous Feedback</h6>
+        <p>Student identities are never linked to feedback data.</p>
+      </div>
+
+      <div class="feature-card">
+        <i class="bi bi-cpu-fill"></i>
+        <h6>AI-Based Analysis</h6>
+        <p>Sentiment analysis and trend detection provide meaningful insights.</p>
+      </div>
+
+      <div class="feature-card">
+        <i class="bi bi-bar-chart-fill"></i>
+        <h6>Aggregated Dashboards</h6>
+        <p>Administrators view only summarized analytics.</p>
+      </div>
+
+      <div class="feature-card">
+        <i class="bi bi-people-fill"></i>
+        <h6>Role-Based Access</h6>
+        <p>Separate access for students and administrators.</p>
+      </div>
+
+      <div class="feature-card">
+        <i class="bi bi-lock-fill"></i>
+        <h6>Data Security</h6>
+        <p>Secure storage and ethical data handling practices.</p>
+      </div>
+
+      <div class="feature-card">
+        <i class="bi bi-mortarboard-fill"></i>
+        <h6>Academic Improvement</h6>
+        <p>Supports continuous quality enhancement in education.</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>Need help? Contact us</div>
+    <div>© 2026 • Created by <strong>Pramivya</strong></div>
+  </div>
+
+</div>
+
+<script>
+function go(role){
+  localStorage.setItem("role", role);
+  window.location.href = "login.html";
+}
+
+function toggleLearnMore(){
+  const lm = document.getElementById("learnMore");
+  lm.style.display = lm.style.display === "block" ? "none" : "block";
+}
+</script>
+
+</body>
+</html>

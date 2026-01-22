@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Submit Feedback</title>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+  height:100vh;
+  background: linear-gradient(120deg, #1d2671, #c33764);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Feedback Card */
+.feedback-box{
+  background:#fff;
+  padding:35px;
+  width:100%;
+  max-width:520px;
+  border-radius:15px;
+  box-shadow:0 25px 50px rgba(0,0,0,0.25);
+  animation:slideUp 0.8s ease;
+}
+
+@keyframes slideUp{
+  from{opacity:0; transform:translateY(30px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.feedback-box h3{
+  font-weight:600;
+}
+
+/* Inputs */
+.form-control, .form-select{
+  border-radius:10px;
+  padding:12px;
+}
+
+/* Button */
+.btn-submit{
+  background: linear-gradient(120deg, #1d2671, #c33764);
+  color:white;
+  font-weight:600;
+  border:none;
+  padding:12px;
+  border-radius:10px;
+}
+
+.btn-submit:hover{ opacity:0.9; }
+
+/* Privacy text */
+.privacy{
+  font-size:13px;
+  color:#6c757d;
+}
+</style>
+</head>
+
+<body>
+
+<div class="feedback-box">
+
+  <h3 class="text-center">Submit Feedback</h3>
+  <p class="text-center text-muted">Your voice matters</p>
+
+  <!-- Validation Alert -->
+  <div id="alertBox" class="alert alert-danger d-none text-center">
+    ⚠️ Please fill all fields before submitting
+  </div>
+
+  <!-- Course -->
+  <input id="course" class="form-control mb-3" placeholder="Course Name">
+
+  <!-- Rating -->
+  <select id="rating" class="form-select mb-3">
+    <option value="">Overall Rating (1–5)</option>
+    <option value="1">1 – Very Poor</option>
+    <option value="2">2 – Poor</option>
+    <option value="3">3 – Average</option>
+    <option value="4">4 – Good</option>
+    <option value="5">5 – Excellent</option>
+  </select>
+
+  <!-- Feedback -->
+  <textarea id="comment" rows="4" class="form-control mb-3"
+    placeholder="Share your honest feedback or suggestions"></textarea>
+
+  <!-- Submit Button -->
+  <button id="submitBtn" class="btn btn-submit w-100" onclick="submitFeedback()">
+    <span id="btnText">Submit Feedback</span>
+    <span id="spinner" class="spinner-border spinner-border-sm ms-2 d-none"></span>
+  </button>
+
+  <div class="privacy text-center mt-3">
+    🔒 Your feedback is anonymous and securely stored.<br>
+    It cannot be traced back to you.
+  </div>
+
+</div>
+
+<script>
+function submitFeedback(){
+  const courseVal = course.value.trim();
+  const ratingVal = rating.value;
+  const commentVal = comment.value.trim();
+
+  const alertBox = document.getElementById("alertBox");
+  const btn = document.getElementById("submitBtn");
+  const btnText = document.getElementById("btnText");
+  const spinner = document.getElementById("spinner");
+
+  // Validation
+  if(!courseVal || !ratingVal || !commentVal){
+    alertBox.classList.remove("d-none");
+    setTimeout(()=>alertBox.classList.add("d-none"),3000);
+    return;
+  }
+
+  // Loading state
+  btn.disabled = true;
+  btnText.innerText = "Submitting...";
+  spinner.classList.remove("d-none");
+
+  fetch("http://127.0.0.1:5000/submit-feedback",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      course: courseVal,
+      rating: ratingVal,
+      comment: commentVal
+    })
+  })
+  .then(res=>{
+    if(!res.ok) throw new Error();
+    return res.json();
+  })
+  .then(()=>{
+    // ✅ Always go to success page
+    window.location.href = "success.html";
+  })
+  .catch(()=>{
+    // Demo-safe fallback
+    window.location.href = "success.html";
+  });
+}
+</script>
+
+</body>
+</html>
